@@ -21,26 +21,6 @@
 <body>
 
 
-<?php 
-
-session_start();
-$session_id = session_id();
-?>
-<?php
-$session=$session_id;
-        require('config/config.php');
-        require('config/db.php');
-
-        $result = mysqli_query($conn,"SELECT id, name FROM user where id= '$session'");
-        while($row = mysqli_fetch_array($result))
-          {
-          $sessionname=$row['name'];
-          $id = $row['id']; // Fetch the id column
-        
-          }
-        ?>
-        
-
  <!-- Sidebar -->
  
 
@@ -51,9 +31,6 @@ $session=$session_id;
                 
                 
                 <?php include('includes/sidebar.php'); ?>
-
-              
-
             </div>
         </div>
         <div class="main-panel">
@@ -61,10 +38,9 @@ $session=$session_id;
         
  <!-- Sidebar -->
  
-             
-    <!-------- home panel ----------------------------->
-    
-    <div class="content">
+
+ <!-------- home panel ----------------------------->
+ <div class="content">
                 <div class="container-fluid">
                     <div class="section">
                     </div>
@@ -76,67 +52,13 @@ $session=$session_id;
                                 <div class="col-md-12">
 
                                 </div>
-                                
-                                <div class="col-md-12 hoverable">
-                              
-                              <a href="#" data-toggle="modal" data-target="#adduserModal">                                        
-                                  <button type="submit" class="btn btn-info btn-fill pull-right">Add User</button>
-                              
-                              </a>
-                          </div>
-
-
-<div id="adduserModal" class="modal fade" role="dialog">
-<div class="modal-dialog">
-
-<!-- Modal content-->
-<div class="modal-content">
-<div class="modal-header">
-  <button type="button" class="close" data-dismiss="modal">&times;</button>
-  <h4 class="modal-title">Add User</h4>
-</div>
-<div class="modal-body">
-  <form method="post" action="useradd.php">
-<table width="200" border="1">
-<tr>
-<td>Username:</td>
-<td><input type="text" name="username" /></td>
-</tr>
-<tr>
-<td>Password:</td>
-<td><input type="text" name="password" /></td>
-</tr>
-<tr>
-<td>Name:</td>
-<td><input type="text" name="name" /></td>
-</tr>
-<tr>
-<td> </td>
-<td><input type="submit" name="ok" value="Add"/></td>
-</tr>
-</table>
-
-</form>
-</div>
-<div class="modal-footer">
-  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-</div>
-</div>
-
-</div>
-</div>
-
-
-
-
-                                
+                                <div class="col-md-12">
+                                   
+                                    </a>
+                                </div>
                                 <div class="card-header ">
-                                    <h4 class="card-title">System Users</h4>
-                                    <div class="panel panel-info">
-           
-
-                    
-
+                                    <h4 class="card-title">Billing</h4>
+            
                                     </div>
                                 <div class="card-body table-full-width table-responsive">
                                     <table class="table table-hover table-striped">
@@ -144,96 +66,46 @@ $session=$session_id;
                
                                 <thead>
                                 <th>Id</th>
-                                <th>Username</th>
-                                <th>Password</th>
-                                <th>Name</th>
-                                <th>Action</th>
+                                <th>First Name</th>
+                                <th>Last Name</th>
+                                <th>Mi</th>
+                                <th>Address</th>
+                                <th>Contact</th>
+                                <th>Action</th>    
+                                
 
                             </thead>
                              <tbody>
 
-                                <tbody>
-                                    @foreach ($users as $user)
-                                        <tr>
-                                            <td>{{ $user->id }}</td>
-                                            <td>{{ $user->name }}</td>
-                                            <td>{{ $user->email }}</td>
-                                            <td>
-                                                <a href="{{ route('users.edit', $user->id) }}" class="btn btn-primary btn-sm">Edit</a>
-                                                <form action="{{ route('users.destroy', $user->id) }}" method="POST">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                                                </form>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                          
-                             
+                                <tr>
+                                    @foreach ($clients as $client)
+                                  <td>{{ $client->id }}</td>
+                                  <td>{{ $client->fname }}</td>
+                                  <td>{{ $client->lname }}</td>
+                                  <td>{{ $client->mi }}</td>
+                                  <td>{{ $client->address }}</td>
+                                  <td>{{ $client->contact }}</td>
+                                <td>
+                                <a rel='facebox' href='{{ route('bill.add', ['id' => $client->id]) }}'><span class="btn btn-primary btn-sm btn-fill">Add Bill</span> </a> &nbsp; &nbsp;
+                                <a rel='facebox' href='viewbill?id={{ $client->id }}'><span class="btn btn-secondary btn-sm btn-fill\">View</span> </a>
+                                </td>
+                                </tr>
+                                @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                           
+               
 
+                                </div>
+             
+           </div>
+         </div>
+      </div>
+    </div>
    <!-----  ######################################### -->
    
 
-</div>
-</body>
-
-</html>
- <script src="js/jquery.js"></script>
-  <script type="text/javascript">
-$(function() {
-
-
-$(".delbutton").click(function(){
-
-//Save the link in a variable called element
-var element = $(this);
-
-//Find the id of the link that was clicked
-var del_id = element.attr("id");
-
-//Built a url to send
-var info = 'id=' + del_id;
- if(confirm("Sure you want to delete this update? There is NO undo!"))
-		  {
-
- $.ajax({
-   type: "GET",
-   url: "delete.php",
-   data: info,
-   success: function(){
-   
-   }
- });
-         $(this).parents(".record").animate({ backgroundColor: "#fbc7c7" }, "fast")
-		.animate({ opacity: "hide" }, "slow");
-
- }
-
-return false;
-
-});
-
-});
-</script>
-
-
-       
-  
-        </div>
-     
-
-
-
-
-
-
-
-
-
-
-
-    
  <!-- Footer -->
 
         
